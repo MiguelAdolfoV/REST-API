@@ -1,21 +1,17 @@
-//importar el modelo de datos Role
-import Role from "../models/Role";
+import Role from "../models/Role.js"
 
-//exportar funcion para crear roles
+//Funcion para crear roles
 export const createRoles = async () =>{
     try{
-        //verificar si existen los roles en la base de datos
+        //verificar si ya existen los roles
         const count = await Role.estimatedDocumentCount();
 
-        //si no existen roles, crearlos
-        if(count > 0 ) return;
+        //crear los roles si no existen
+        if(count > 0) return;
 
-        //Crear roles por defecto envueltos en una promesa
         const values = await Promise.all([
-            new Role({name: "user"}).save(),
-            new Role({name: "moderator"}).save(),
+            new Role({name: "customer"}).save(),
             new Role({name: "admin"}).save()
-
         ]);
         console.log(values);
     }catch(error){

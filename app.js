@@ -1,29 +1,30 @@
-import  express  from "express";
-import productsRouters from './src/routes/products.routes';
-import authRutes from './src/routes/auth.routes';
-import tokenRoutes from './src/routes/token.routes';
-import { createRoles } from "./src/libs/initialSetup";
-
-
-
+import * as messages from "./Art/Messages.js";
+import cors from 'cors';
+import express from 'express';
 const app = express();
 app.use(express.json());
 
-//Ejecutar funcion para crear roles por defecto
+//crear roles por defecto
+import { createRoles } from './src/libs/initialSetup.js';
 createRoles();
 
-//endpint index
-app.get('/', (req,res) => {
-    res.send("Bienvenido a mi API");
+//Ruta inicial
+app.get('/', (req, res) =>{
+    res.send(messages.Welcome)
 });
 
-//endpoint para productos
-app.use('/api/products', productsRouters);
 
-//endpoint para auth
-app.use('/api/auth', authRutes);
+app.use(cors(
+  {
+    origin: "*",
+    methods: ["POST", "GET"],
+    credentials: true
+  }
+))
 
-//enpoint para token
-app.use('/api/token',tokenRoutes);
+//rutas
+import authRoutes from './src/routes/auth.routes.js';
+app.use('/api/auth',authRoutes);
+
 
 export default app;

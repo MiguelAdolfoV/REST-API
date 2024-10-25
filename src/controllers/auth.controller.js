@@ -1,55 +1,59 @@
-//importar modelo de datos USE
-import { response } from "express";
-import User from "../models/User";
-import Role from "../models/Role";
-import { signToken,verifyToken } from "./token.controller";
+//importar modelos
+import User from "../models/User.js";
+import Role from "../models/Role.js";
 
-//exportar las funciones de singup y singin
-export const singup = async (req, res) => {
-  //Extraer datos de la peticion
-  const { username, email, password } = req.body;
+//importar controlador de token
+import * as token from "../controllers/token.controller.js"
 
-  //crear nuevo usuario
-  const newUser = new User({
-    username,
-    email,
-    password: await User.encryptPassword(password),
-  });
+//importar mensajes
+ import * as messages from "../../Art/Messages.js"
 
+export const signUp = async (req,res) => {
+    try{
+         //extraer datos de peticion
+    const {username,email,password} = req.body;
+    //crear nuevo usuario
+    const newUser = new User({
+        username,
+        email,
+        password: await User.encryptPassword(password)
+    });
 
-  //condicional para asignar roles, si no se envia rol se asigna usuario
-  if (req.body.roles) {
-    const foundRoles = await Role.find({ name: { $in: req.body.roles } });
-    newUser.roles = foundRoles.map((role) => role.id);
-  } else {
-    const role = await Role.findOne({ name: "user" });
-    newUser.roles = [role.id];
-  }
+    if(req.body.roles){
+        const foundRoles = await Role.find({ name: {$in: req.body.roles} });
+        newUser.roles = foundRoles.map(role => role.id);
+    } else {
+        const role = await Role.findOne({ name: "customer"});
+        newUser.roles = [role.id];
+    }
 
-  //Guardar usuario en la base de datos
-  const saveUser = await newUser.save();
-  console.log(newUser);
+    const saveUser = await newUser.save();
+    console.log(saveUser);
 
-  //responder al cliente
-  res.json(singup);
-};
+    //responder
+    res.json(messages.savedUserSimple)
+    } catch (error) {
+        console.error(error);
 
-export const signin = async (req, res) => {
-  //buscar usuario por correo
-  const userFound = await User.findOne({email: req.body.email}).populate("roles");
-  //si no se encuentra el usuario, enviar mensaje de error
-  if(!userFound) return res.status(400).json({message: "usuariono encontrado"});
-  //verifcar contra
-  const matchPassword = await User.comparePassword(req.body.password, userFound.password);
- // const matchPassword = await userFound.comparePassword(req.body.password);
+    }   
+}
 
-  //error si no coincide
-  if(!matchPassword) return res.status(401).json({token: null, message: "contraseña incorrecta"});
+export const signIn = async (req,res) => {
+    //verificar correo
+    const userFound = await User.findOne({email: req.body.email}).populate("roles");
+    if(!userFound){
+        console.log(messages.Error);
+        return res.status(400).json({message: messages.notFoundEmail}); 
+    } 
+    //verificar contra
+    const matchPasword = await User.comparePassword(req.body.password, userFound.password);
+    if(!matchPasword){
+        console.log(messages.Error);
+        return res.status(401).json({message: messages.notFoundPassword})
+    } ;
 
-  //generar token
-  const token = await signToken(userFound.id);
-    
-  // responder con el token
-  res.json({ token });
-
-};
+    const generatedToken = await token.signToken(userFound.id);
+    //Usuario encontrado
+    //console.log(userFound);
+    res.status(200).json({generatedToken});
+}

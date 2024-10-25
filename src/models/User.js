@@ -14,8 +14,8 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    roles:[{
-        ref:"Role",
+    roles: [{
+        ref: "Role",
         type: Schema.Types.ObjectId
     }]
 },{
@@ -29,7 +29,7 @@ userSchema.statics.encryptPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
     //Retornar la contraseña encriptada
     return await bcrypt.hash(password, salt);
-}
+};
 
 // Método para comparar la contraseña
 userSchema.statics.comparePassword = async function (password, hashedPassword) {
