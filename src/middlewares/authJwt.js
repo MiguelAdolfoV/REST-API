@@ -5,10 +5,10 @@ import * as messages from "../../Art/Messages.js";
 
 
 
-// valida si el token es valido
+// checa si el token es valido
 export const verifyToken = async (req, res, next) => {
     const token = req.headers['x-access-token'];
-    if (!token) return res.status(403).json({ message: "no se ha proporcionado token" });
+    if (!token) return res.status(403).json({ message: "token not found" });
 
 
     try {
@@ -20,12 +20,12 @@ export const verifyToken = async (req, res, next) => {
         const user = await User.findById(req.userId, { password: 0 });
 
         // validar si el usuario existe
-        if (!user) return res.status(404).json({ message: "usuario no encontrado" });
+        if (!user) return res.status(404).json({ message: "user not found" });
 
         // continuar con la siguiente acción si el usuario existe
         next();
     } catch (error) {
-        return res.status(401).json({ message: "token inválido" , token: token});
+        return res.status(401).json({ message: "invalid token" , token: token});
     }
     
 
