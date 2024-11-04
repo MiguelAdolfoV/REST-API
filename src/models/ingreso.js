@@ -1,5 +1,3 @@
-import { Schema, model } from "mongoose";
-
 const ingresoSchema = new Schema({
     usuario: {
         type: String,
@@ -10,12 +8,12 @@ const ingresoSchema = new Schema({
         default: true
     },
     cantidad: {
-        type: String,
-        default: true
+        type: Number,
+        required: true
     }
 }, {
     timestamps: true,
     versionKey: false
 });
 
-export default model('Cantidad', cantidadSchema)
+export default model('Ingreso', ingresoSchema);
