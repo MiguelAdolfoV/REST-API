@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 const ingresoSchema = new Schema({
     usuario: {
@@ -13,9 +13,9 @@ const ingresoSchema = new Schema({
         type: Number,
         required: true
     }
-}, {
+},{
     timestamps: true,
     versionKey: false
 });
 
-export default model('Ingreso', ingresoSchema);
+export default model('Ingreso' ,ingresoSchema);
