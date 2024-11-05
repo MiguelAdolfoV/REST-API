@@ -1,4 +1,4 @@
-import Ingreso from './Ingreso.js';
+import Ingreso from '../models/Ingreso.js';
 
 export const getIngreso = async (req, res) =>{
     const ingresos = await Ingreso.find();
