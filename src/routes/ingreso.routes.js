@@ -10,7 +10,7 @@ import { authJwt } from "../middlewares/index.js";
 //establecer rutas para ingreso
 router.get('/',[authJwt.verifyToken, authJwt.isCustomer], authJwt.verifyToken,ingresoCtrl.getIngreso);
 router.get('/:ingresoId', [authJwt.verifyToken, authJwt.isCustomer],ingresoCtrl.getIngresoById);
-router.post('/',[authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.createIngreso);
+router.post('/',[authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.createIngreso);
 router.put('/:ingresoId', [authJwt.verifyToken, authJwt.isAdmin],ingresoCtrl.updateIngreso);
 router.delete('/:ingresoId',[authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.deleteIngreso);
 
