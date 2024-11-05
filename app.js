@@ -24,7 +24,9 @@ app.use(cors(
 
 //rutas
 import authRoutes from './src/routes/auth.routes.js';
+import ingresoRoutes from './src/routes/ingreso.routes.js';
 app.use('/api/auth',authRoutes);
+app.use('/api/ingreso',ingresoRoutes);
 
 
 export default app;
