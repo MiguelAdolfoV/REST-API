@@ -1,6 +1,6 @@
 import Ingreso from '../models/Ingreso.js';
 
-export const getIngreso = async (req, res) =>{
+export const getIngreso  = async (req, res) =>{
     const ingresos = await Ingreso.find();
     res.json(ingresos);
 }
@@ -20,7 +20,7 @@ export const getIngresoById = async (req, res) => {
 export const createIngreso = async (req, res) =>{
     try{    
         const {usuario, tipo, cantidad} = req.body;
-        const newingreso = new Ingreso({usuario, tipo, cantidad});
+        const newIngreso = new Ingreso({usuario, tipo, cantidad});
         const ingresoSave = await newIngreso.save();
         res.status(201).json(ingresoSave);
     } catch (error) {
