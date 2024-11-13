@@ -12,5 +12,6 @@ router.get('/:ingresoId', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl
 router.post('/', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.createIngreso);
 router.put('/:ingresoId', [authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.updateIngreso);
 router.delete('/:ingresoId', [authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.deleteIngreso);
+router.post('/consejo', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.getConsejo);
 
 export default router;

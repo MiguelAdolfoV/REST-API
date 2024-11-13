@@ -1,4 +1,6 @@
 import Ingreso from '../models/Ingreso.js';
+import { predict } from './decisionTree.controller.js';
+
 
 export const getIngreso = async (req, res) => {
     const ingresos = await Ingreso.find();
@@ -50,5 +52,36 @@ export const deleteIngreso = async (req, res) => {
         res.json({ message: 'Ingreso borrado exitosamente' });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+export const getConsejo = async (req, res) => {
+    try {
+        const { usuario } = req.body;
+
+        const ingresosData = await Ingreso.find({ usuario });
+
+        const totalIngresos = ingresosData
+            .filter(entry => entry.tipo === true)
+            .reduce((acc, curr) => acc + curr.cantidad, 0);
+
+        const totalEgresos = ingresosData
+            .filter(entry => entry.tipo === false)
+            .reduce((acc, curr) => acc + curr.cantidad, 0);
+
+        const balance = totalIngresos - totalEgresos;
+
+        const input = {
+            "Ingresos Totales": totalIngresos,
+            "Egresos Totales": totalEgresos,
+            "Balance": balance
+        };
+
+        const consejo = predict(input);
+
+        res.status(200).json({ consejo });
+    } catch (error) {
+        console.error("Error en getConsejo:", error);
+        res.status(500).json({ message: "Error al obtener el consejo financiero" });
     }
 };
