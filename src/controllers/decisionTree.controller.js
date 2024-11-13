@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-// Cargar el modelo JSON
-const model = JSON.parse(fs.readFileSync('/financial_advice_model.json', 'utf8'));
+// Importar el modelo JSON directamente
+import model from './financial_advice_model.json' assert { type: "json" };
 
 // Función para hacer predicciones usando el árbol de decisiones en JSON
 function predict(input, node = model) {
@@ -20,5 +20,4 @@ function predict(input, node = model) {
     }
 }
 
-// Exportar la función predict para usarla en otros módulos
-module.exports = { predict };
+export { predict };
