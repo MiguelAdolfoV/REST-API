@@ -1,9 +1,7 @@
 import Ingreso from '../models/Ingreso.js';
 import joblib from 'joblib';
 
-// Cargar el modelo entrenado
-const loadedModel = joblib.load('../models/financial_advice_model.pkl'); 
-export const getIngreso = async (req, res) => {
+export const getIngreso = async (req, res) =>{
     const ingresos = await Ingreso.find();
     res.json(ingresos);
 };
@@ -20,10 +18,10 @@ export const getIngresoById = async (req, res) => {
     }
 };
 
-export const createIngreso = async (req, res) => {
-    try {
-        const { usuario, tipo, cantidad } = req.body;
-        const newIngreso = new Ingreso({ usuario, tipo, cantidad });
+export const createIngreso = async (req, res) =>{
+    try{    
+        const {usuario, tipo, cantidad} = req.body;
+        const newIngreso = new Ingreso({usuario, tipo, cantidad});
         const ingresoSave = await newIngreso.save();
         res.status(201).json(ingresoSave);
     } catch (error) {
