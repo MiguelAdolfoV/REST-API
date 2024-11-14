@@ -1,9 +1,5 @@
-const fs = require('fs');
-
-// Importar el modelo JSON directamente
 import model from './financial_advice_model.json' assert { type: "json" };
 
-// Función para hacer predicciones usando el árbol de decisiones en JSON
 function predict(input, node = model) {
     if (node.value) {
         // Estamos en una hoja, devuelve el valor de predicción
