@@ -54,7 +54,7 @@ export const signIn = async (req, res) => {
         const generatedToken = await token.signToken(userFound.id);
         //Usuario encontrado
         //console.log(userFound);
-        res.status(200).json({ token: generatedToken });
+        res.status(200).json({ token: generatedToken, username: userFound });
     } catch (error) {
         console.error("Error in signIn:", error);
         res.status(500).json({ message: "A server error has occurred" });
