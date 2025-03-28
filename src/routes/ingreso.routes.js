@@ -13,5 +13,7 @@ router.post('/', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.createIn
 router.put('/:ingresoId', [authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.updateIngreso);
 router.delete('/:ingresoId', [authJwt.verifyToken, authJwt.isAdmin], ingresoCtrl.deleteIngreso);
 router.post('/consejo', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.getConsejo);
+router.post('/metas', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.createMeta);
+router.get('/metas/:usuario', [authJwt.verifyToken, authJwt.isCustomer], ingresoCtrl.getMetaByUsuarioId);
 
 export default router;
