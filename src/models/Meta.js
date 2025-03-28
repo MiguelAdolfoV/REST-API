@@ -1,9 +1,21 @@
-import mongoose from 'mongoose';
+import { Schema, model } from "mongoose";
 
-const MetaSchema = new mongoose.Schema({
-    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    meta: { type: String, required: true },
-    consejo: { type: String, required: true }
-}, { timestamps: true });
+const metaSchema = new Schema({
+    usuario: {
+        type: String,
+        required: true
+    },
+    meta: {
+        type: String,
+        default: true
+    },
+    consejo: {
+        type: String,
+        required: true
+    }
+},{
+    timestamps: true,
+    versionKey: false
+});
 
-export default mongoose.model('Meta', MetaSchema);
+export default model('Meta' ,metaSchema);
