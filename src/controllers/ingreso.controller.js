@@ -1,10 +1,30 @@
 import Ingreso from '../models/Ingreso.js';
-import { predict } from './decisionTree.controller.js';
 import Meta from '../models/Meta.js';
-import User from '../models/User.js';
+import { predict } from './decisionTree.controller.js';
 
+// Obtener todas las metas
+export const getMetas = async (req, res) => {
+    try {
+        const metas = await Meta.find();
+        res.json(metas);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
+// Crear una nueva meta
+export const createMeta = async (req, res) => {
+    try {
+        const { usuario, meta, consejo } = req.body;
+        const newMeta = new Meta({ usuario, meta, consejo });
+        const metaSave = await newMeta.save();
+        res.status(201).json(metaSave);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
+// Controladores existentes...
 export const getIngreso = async (req, res) => {
     const ingresos = await Ingreso.find();
     res.json(ingresos);
@@ -86,59 +106,5 @@ export const getConsejo = async (req, res) => {
     } catch (error) {
         console.error("Error en getConsejo:", error);
         res.status(500).json({ message: "Error al obtener el consejo financiero" });
-    }
-};
-
-export const getMetasByUsuario = async (req, res) => {
-    try {
-        const { usuario } = req.params;
-
-        // Buscar ID del usuario por nombre
-        const user = await User.findOne({ username: usuario });
-
-        if (!user) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
-        }
-
-        // Buscar metas con el ID del usuario
-        const metas = await Meta.find({ usuario: user._id });
-
-        if (!metas.length) {
-            return res.status(404).json({ message: "No se encontraron metas para este usuario" });
-        }
-
-        res.status(200).json(metas);
-    } catch (error) {
-        console.error("Error en getMetasByUsuario:", error);
-        res.status(500).json({ message: "Error al obtener las metas" });
-    }
-};
-
-import User from '../models/User.js';
-import Meta from '../models/Meta.js';
-
-export const createMeta = async (req, res) => {
-    try {
-        const { usuario, meta, consejo } = req.body;
-
-        if (!usuario || !meta || !consejo) {
-            return res.status(400).json({ message: "Todos los campos son obligatorios" });
-        }
-
-        // Buscar ID del usuario por su nombre
-        const user = await User.findOne({ username: usuario });
-
-        if (!user) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
-        }
-
-        // Crear meta con el ID del usuario
-        const newMeta = new Meta({ usuario: user._id, meta, consejo });
-        const savedMeta = await newMeta.save();
-
-        res.status(201).json(savedMeta);
-    } catch (error) {
-        console.error("Error en createMeta:", error);
-        res.status(500).json({ message: "Error al crear la meta" });
     }
 };
