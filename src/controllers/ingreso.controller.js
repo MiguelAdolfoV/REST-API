@@ -101,31 +101,33 @@ export const deleteIngreso = async (req, res) => {
 
 export const getConsejo = async (req, res) => {
     try {
-        const { usuario } = req.body;
-
-        const ingresosData = await Ingreso.find({ usuario });
-
-        const totalIngresos = ingresosData
-            .filter(entry => entry.tipo === true)
-            .reduce((acc, curr) => acc + curr.cantidad, 0);
-
-        const totalEgresos = ingresosData
-            .filter(entry => entry.tipo === false)
-            .reduce((acc, curr) => acc + curr.cantidad, 0);
-
-        const balance = totalIngresos - totalEgresos;
-
-        const input = {
-            "Ingresos Totales": totalIngresos,
-            "Egresos Totales": totalEgresos,
-            "Balance": balance
-        };
-
-        const consejo = predict(input);
-
-        res.status(200).json({ consejo });
+      const { usuario } = req.body;
+  
+      const ingresosData = await Ingreso.find({ usuario });
+  
+      const totalIngresos = ingresosData
+        .filter(entry => entry.tipo === true)
+        .reduce((acc, curr) => acc + curr.cantidad, 0);
+  
+      const totalEgresos = ingresosData
+        .filter(entry => entry.tipo === false)
+        .reduce((acc, curr) => acc + curr.cantidad, 0);
+  
+      const balance = totalIngresos - totalEgresos;
+  
+      const prompt = `Dado este resumen financiero: ingresos: $${totalIngresos}, egresos: $${totalEgresos}, balance: $${balance}, genera un consejo útil y motivador de máximo 10 palabras.`;
+  
+      const result = await genAI.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: prompt
+      });
+  
+      const consejo = result.text?.trim() || 'Administra tus finanzas con sabiduría.';
+  
+      res.status(200).json({ consejo });
     } catch (error) {
-        console.error("Error en getConsejo:", error);
-        res.status(500).json({ message: "Error al obtener el consejo financiero" });
+      console.error("Error en getConsejo con Gemini:", error);
+      res.status(500).json({ message: "Error al obtener el consejo financiero con IA" });
     }
-};
+  };
+  
