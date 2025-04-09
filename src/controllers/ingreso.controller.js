@@ -3,8 +3,10 @@ import Meta from '../models/Meta.js';
 import { predict } from './decisionTree.controller.js';
 import { GoogleGenAI } from '@google/genai';
 
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
-
+const genAI = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
+  });
+  
 // Obtener todas las metas
 export const getMetas = async (req, res) => {
     try {
