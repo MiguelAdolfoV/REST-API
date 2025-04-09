@@ -2,7 +2,6 @@ import Ingreso from '../models/Ingreso.js';
 import Meta from '../models/Meta.js';
 import { predict } from './decisionTree.controller.js';
 import { GoogleGenAI } from '@google/genai';
-import Meta from '../models/Meta.js';
 
 const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
