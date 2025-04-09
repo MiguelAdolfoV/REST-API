@@ -1,6 +1,10 @@
 import Ingreso from '../models/Ingreso.js';
 import Meta from '../models/Meta.js';
 import { predict } from './decisionTree.controller.js';
+import { GoogleGenAI } from '@google/genai';
+import Meta from '../models/Meta.js';
+
+const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
 
 // Obtener todas las metas
 export const getMetas = async (req, res) => {
@@ -15,12 +19,30 @@ export const getMetas = async (req, res) => {
 // Crear una nueva meta
 export const createMeta = async (req, res) => {
     try {
-        const { usuario, meta, consejo } = req.body;
-        const newMeta = new Meta({ usuario, meta, consejo });
-        const metaSave = await newMeta.save();
-        res.status(201).json(metaSave);
+      const { usuario, meta, consejo } = req.body;
+  
+      let consejoFinal = consejo;
+  
+      // Si no se proporciona un consejo, generarlo con IA
+      if (!consejoFinal) {
+        const prompt = `Un niño ha establecido la siguiente meta financiera: "${meta}". Dame una lista de 4 consejos para ayudarlo a lograrla. Responde solo con la lista de consejos, sin explicaciones adicionales.`;
+  
+        const model = await genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }]
+        });
+  
+        consejoFinal = await result.response.text();
+      }
+  
+      const newMeta = new Meta({ usuario, meta, consejo: consejoFinal });
+      const metaSave = await newMeta.save();
+  
+      res.status(201).json(metaSave);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      console.error('Error en createMeta con IA:', error);
+      res.status(500).json({ message: error.message });
     }
 };
 
