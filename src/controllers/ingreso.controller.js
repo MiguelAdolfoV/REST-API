@@ -22,17 +22,15 @@ export const createMeta = async (req, res) => {
   
       let consejoFinal = consejo;
   
-      // Si no se proporciona un consejo, generarlo con IA
       if (!consejoFinal) {
-        const prompt = `Un niño ha establecido la siguiente meta financiera: "${meta}". Dame una lista de 4 consejos para ayudarlo a lograrla. Responde solo con la lista de consejos, sin explicaciones adicionales.`;
+        const prompt = `Un niño ha establecido la siguiente meta financiera: "${meta}". Dame una lista de 4 consejos para ayudarlo a lograrla. Responde solo con la lista de consejos.`;
   
-        const model = await genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-  
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }]
+        const result = await genAI.models.generateContent({
+          model: 'gemini-1.5-flash',
+          contents: prompt
         });
   
-        consejoFinal = await result.response.text();
+        consejoFinal = result.text;
       }
   
       const newMeta = new Meta({ usuario, meta, consejo: consejoFinal });
@@ -43,8 +41,8 @@ export const createMeta = async (req, res) => {
       console.error('Error en createMeta con IA:', error);
       res.status(500).json({ message: error.message });
     }
-};
-
+  };
+  
 // Controladores existentes...
 export const getIngreso = async (req, res) => {
     const ingresos = await Ingreso.find();
